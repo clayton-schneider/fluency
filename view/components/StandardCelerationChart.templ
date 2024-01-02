@@ -1,10 +1,15 @@
 package components
 
-templ Page() {
+import "github.com/clayton-schneider/fluency/models"
+
+templ SSChart(chart models.Chart) {
 <div>
 	<div style="margin-top: 40px;" id="container"></div>
-	<script>
+	@BuildSSC(chart)
+</div>
+}
 
+script BuildSSC(chart models.Chart) {
 		// Declare the chart dimensions and margins.
 		const width = 840;
 		const height = 500;
@@ -66,10 +71,9 @@ templ Page() {
 		svg.append("g")
 			.attr("transform", `translate(${marginLeft},0)`)
 			.call(d3.axisLeft(y).tickFormat(function (d) {
-				return y.tickFormat(10, d3.format(",s"))(d)
+				return y.tickFormat(10, d3.format(""))(d)
 			}))
 
-		console.log("hi")
 		// Add left y-axis label
 		svg.append("text")
 			.attr("x", -(height / 2))
@@ -78,12 +82,23 @@ templ Page() {
 			.attr("transform", "rotate(-90)")
 			.text("COUNT PER MINUTE")
 
+
+		chart.Data.forEach((d, i) => {
+			svg.append("circle")
+				.attr("fill", "white")
+				.attr("cx", x(i + 1))
+				.attr("cy", y(d))
+				.attr("r", 1);	
+		})
+
+		chart.Data.forEach(d => console.log(y(d)))
+
+
+		 
 		// set colors
 		const color = "rgb(68, 187, 239)"
 		svg.style('stroke', color).style('color', color)
 
 		// Append the SVG element.
 		container.append(svg.node());
-	</script>
-</div>
 }

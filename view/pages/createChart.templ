@@ -6,7 +6,7 @@ templ CreateChart() {
 @layout.Base() {
 <section>
 	<h1>Hi There</h1>
-	<form hx-swap="outerHTML"hx-post="/create-chart">
+	<form hx-swap="outerHTML"hx-post="/create-chart?redirect=true">
 		<div>
 			<label for="start-date">What is the start date of observation?</label>
 			<input type="date" name="start-date" />

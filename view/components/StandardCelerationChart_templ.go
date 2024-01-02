@@ -10,7 +10,9 @@ import "context"
 import "io"
 import "bytes"
 
-func Page() templ.Component {
+import "github.com/clayton-schneider/fluency/models"
+
+func SSChart(chart models.Chart) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -23,13 +25,29 @@ func Page() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div><div style=\"margin-top: 40px;\" id=\"container\"></div><script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div><div style=\"margin-top: 40px;\" id=\"container\"></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var2 := `
+		templ_7745c5c3_Err = BuildSSC(chart).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if !templ_7745c5c3_IsBuffer {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
+		}
+		return templ_7745c5c3_Err
+	})
+}
 
-		// Declare the chart dimensions and margins.
+func BuildSSC(chart models.Chart) templ.ComponentScript {
+	return templ.ComponentScript{
+		Name: `__templ_BuildSSC_f1d7`,
+		Function: `function __templ_BuildSSC_f1d7(chart){// Declare the chart dimensions and margins.
 		const width = 840;
 		const height = 500;
 		const marginTop = 20;
@@ -90,10 +108,9 @@ func Page() templ.Component {
 		svg.append("g")
 			.attr("transform", ` + "`" + `translate(${marginLeft},0)` + "`" + `)
 			.call(d3.axisLeft(y).tickFormat(function (d) {
-				return y.tickFormat(10, d3.format(",s"))(d)
+				return y.tickFormat(10, d3.format(""))(d)
 			}))
 
-		console.log("hi")
 		// Add left y-axis label
 		svg.append("text")
 			.attr("x", -(height / 2))
@@ -102,24 +119,26 @@ func Page() templ.Component {
 			.attr("transform", "rotate(-90)")
 			.text("COUNT PER MINUTE")
 
+
+		chart.Data.forEach((d, i) => {
+			svg.append("circle")
+				.attr("fill", "white")
+				.attr("cx", x(i + 1))
+				.attr("cy", y(d))
+				.attr("r", 1);	
+		})
+
+		chart.Data.forEach(d => console.log(y(d)))
+
+
+		 
 		// set colors
 		const color = "rgb(68, 187, 239)"
 		svg.style('stroke', color).style('color', color)
 
 		// Append the SVG element.
-		container.append(svg.node());
-	`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script></div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		if !templ_7745c5c3_IsBuffer {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
-		}
-		return templ_7745c5c3_Err
-	})
+		container.append(svg.node());}`,
+		Call:       templ.SafeScript(`__templ_BuildSSC_f1d7`, chart),
+		CallInline: templ.SafeScriptInline(`__templ_BuildSSC_f1d7`, chart),
+	}
 }
