@@ -5,18 +5,21 @@ import "github.com/clayton-schneider/fluency/view/layout"
 templ CreateChart() {
 @layout.Base() {
 <section>
-	<form>
-		<label for="start-date">What is the start date of observation?</label>
-		<input type="date" name="start-date" />
-		<label for="skill">What are you tracking?</label>
-		<input type="text" name="skill" />
-		<label for="student">Who is being tracked?</label>
-		<input type="text" name="student" />
-		<label for="count-1">How many times did they do the task?</label>
-		<input type="text" name="count-1" />
-		<label for="time-1">How many seconds did it take them to complete?</label>
-		<input type="text" name="time-1" />
-		<button type="submit">Create Chart</button>
+	<h1>Hi There</h1>
+	<form hx-swap="outerHTML"hx-post="/create-chart">
+		<div>
+			<label for="start-date">What is the start date of observation?</label>
+			<input type="date" name="start-date" />
+		</div>
+		<div>
+			<label for="skill">What are you tracking?</label>
+			<input type="text" name="skill" />
+		</div>
+		<div>
+			<label for="student">Who is being tracked?</label>
+			<input type="text" name="student" />
+		</div>
+		<button value="Submit" type="submit">Create Chart</button>
 	</form>
 </section>
 }

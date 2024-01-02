@@ -10,92 +10,6 @@ import "context"
 import "io"
 import "bytes"
 
-func graph() templ.ComponentScript {
-	return templ.ComponentScript{
-		Name: `__templ_graph_2e38`,
-		Function: `function __templ_graph_2e38(){// Declare the chart dimensions and margins.
-const width = 840;
-const height = 500;
-const marginTop = 20;
-const marginRight = 20;
-const marginBottom = 50;
-const marginLeft = 100;
-
-
-// Create the SVG container.
-const svg = d3.create("svg")
-.attr("width", width)
-.attr("height", height);
-
-// Declare the x (horizontal position) scale.
-const x = d3.scaleLinear().domain([0, 140]).range([marginLeft, width - marginRight])
-// Add the vertical lines on the graph
-for (let i = 1; i <= 140; i++) {
-	svg.append("line")
-		.attr("x1", x(i))
-		.attr("y1", marginTop)
-		.attr("x2", x(i))
-		.attr("y2", height - marginBottom)
-		.attr("stroke-width", i % 7 === 0 ? 0.5 : 0.2)	
-}
-
-// declare the top-x scale
-const topX = d3.scaleLinear().domain([0, 20]).range([marginLeft, width - marginRight])
-
-// Declare the y (vertical position) scale.
-const y = d3.scaleLog().domain([0.0001, 1000]).range([height - marginBottom, marginTop])
-y.ticks().forEach(tick => 
-	svg.append("line")
-		.attr("x1", marginLeft)
-		.attr("y1", y(tick))
-		.attr("x2", width - marginRight)
-		.attr("y2", y(tick))
-		.attr("stroke-width", 0.2)	
-)
-
-// Add the x-axis.
-svg.append("g")
-.attr("transform", ` + "`" + `translate(0,${height - marginBottom})` + "`" + `)
-.call(d3.axisBottom(x));
-
-// Add bottom x-axis label
-svg.append("text")
-.attr("x", (width + marginLeft) / 2)
-.attr("y", height - 2)
-.attr("text-anchor", "middle")
-.text("SUCCESSIVE CALENDAR DAYS")
-
-// Add the top x-axis.
-svg.append("g")
-.attr("transform", ` + "`" + `translate(0,${marginTop})` + "`" + `)
-.call(d3.axisTop(topX).tickValues([0, 4, 8, 12, 16, 20]));
-
-// Add the y-axis.
-svg.append("g")
-.attr("transform", ` + "`" + `translate(${marginLeft},0)` + "`" + `)
-.call(d3.axisLeft(y).tickFormat(function (d) {
-        return y.tickFormat(10 ,d3.format(",s"))(d)
-}))
-
-// Add left y-axis label
-svg.append("text")
-.attr("x", -(height/2))
-.attr("y", marginLeft/2)
-.attr("text-anchor", "middle")
-.attr("transform", "rotate(-90)")
-.text("COUNT PER MINUTE")
-
-// set colors
-const color = "rgb(68, 187, 239)" 
-svg.style('stroke', color).style('color', color)
-
-// Append the SVG element.
-container.append(svg.node());}`,
-		Call:       templ.SafeScript(`__templ_graph_2e38`),
-		CallInline: templ.SafeScriptInline(`__templ_graph_2e38`),
-	}
-}
-
 func Page() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
@@ -109,42 +23,97 @@ func Page() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html><head><title>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div><div style=\"margin-top: 40px;\" id=\"container\"></div><script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var2 := `Standard Celeration Chart`
+		templ_7745c5c3_Var2 := `
+
+		// Declare the chart dimensions and margins.
+		const width = 840;
+		const height = 500;
+		const marginTop = 20;
+		const marginRight = 20;
+		const marginBottom = 50;
+		const marginLeft = 100;
+
+
+		// Create the SVG container.
+		const svg = d3.create("svg")
+			.attr("width", width)
+			.attr("height", height);
+
+		// Declare the x (horizontal position) scale.
+		const x = d3.scaleLinear().domain([0, 140]).range([marginLeft, width - marginRight])
+		// Add the vertical lines on the graph
+		for (let i = 1; i <= 140; i++) {
+			svg.append("line")
+				.attr("x1", x(i))
+				.attr("y1", marginTop)
+				.attr("x2", x(i))
+				.attr("y2", height - marginBottom)
+				.attr("stroke-width", i % 7 === 0 ? 0.5 : 0.2)
+		}
+
+		// declare the top-x scale
+		const topX = d3.scaleLinear().domain([0, 20]).range([marginLeft, width - marginRight])
+
+		// Declare the y (vertical position) scale.
+		const y = d3.scaleLog().domain([0.0001, 1000]).range([height - marginBottom, marginTop])
+		y.ticks().forEach(tick =>
+			svg.append("line")
+				.attr("x1", marginLeft)
+				.attr("y1", y(tick))
+				.attr("x2", width - marginRight)
+				.attr("y2", y(tick))
+				.attr("stroke-width", 0.2)
+		)
+
+		// Add the x-axis.
+		svg.append("g")
+			.attr("transform", ` + "`" + `translate(0,${height - marginBottom})` + "`" + `)
+			.call(d3.axisBottom(x));
+
+		// Add bottom x-axis label
+		svg.append("text")
+			.attr("x", (width + marginLeft) / 2)
+			.attr("y", height - 2)
+			.attr("text-anchor", "middle")
+			.text("SUCCESSIVE CALENDAR DAYS")
+
+		// Add the top x-axis.
+		svg.append("g")
+			.attr("transform", ` + "`" + `translate(0,${marginTop})` + "`" + `)
+			.call(d3.axisTop(topX).tickValues([0, 4, 8, 12, 16, 20]));
+
+		// Add the y-axis.
+		svg.append("g")
+			.attr("transform", ` + "`" + `translate(${marginLeft},0)` + "`" + `)
+			.call(d3.axisLeft(y).tickFormat(function (d) {
+				return y.tickFormat(10, d3.format(",s"))(d)
+			}))
+
+		console.log("hi")
+		// Add left y-axis label
+		svg.append("text")
+			.attr("x", -(height / 2))
+			.attr("y", marginLeft / 2)
+			.attr("text-anchor", "middle")
+			.attr("transform", "rotate(-90)")
+			.text("COUNT PER MINUTE")
+
+		// set colors
+		const color = "rgb(68, 187, 239)"
+		svg.style('stroke', color).style('color', color)
+
+		// Append the SVG element.
+		container.append(svg.node());
+	`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><script src=\"https://cdn.jsdelivr.net/npm/d3@7\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var3 := ``
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script></head>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templ.RenderScriptItems(ctx, templ_7745c5c3_Buffer, graph())
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<body onload=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var4 templ.ComponentScript = graph()
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4.Call)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div style=\"margin-top: 40px;\" id=\"container\"></div></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -12,11 +12,21 @@ import (
 func main() {
 	hPage := components.Page()
 
-	createChart := pages.CreateChart()
 
 	http.Handle("/", templ.Handler(hPage))
 
-	http.Handle("/create-chart", templ.Handler(createChart))
+	http.HandleFunc("/create-chart", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+			pages.CreateChart().Render(r.Context(), w)
+		}
+
+		if r.Method == "POST" {
+			components.Page().Render(r.Context(), w)			
+		}
+	})
+
+		
+
 
 	http.ListenAndServe(":42069", nil)
 }
