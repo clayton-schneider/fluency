@@ -46,10 +46,10 @@ func SSChart(chart models.Chart) templ.Component {
 
 func BuildSSC(chart models.Chart) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_BuildSSC_f1d7`,
-		Function: `function __templ_BuildSSC_f1d7(chart){// Declare the chart dimensions and margins.
-		const width = 840;
-		const height = 500;
+		Name: `__templ_BuildSSC_aaa7`,
+		Function: `function __templ_BuildSSC_aaa7(chart){// Declare the chart dimensions and margins.
+		const width = 1500;
+		const height = 600;
 		const marginTop = 20;
 		const marginRight = 20;
 		const marginBottom = 50;
@@ -120,15 +120,15 @@ func BuildSSC(chart models.Chart) templ.ComponentScript {
 			.text("COUNT PER MINUTE")
 
 
-		chart.Data.forEach((d, i) => {
+		chart.Measurements.forEach((d, i) => {
 			svg.append("circle")
 				.attr("fill", "white")
 				.attr("cx", x(i + 1))
-				.attr("cy", y(d))
+				.attr("cy", y(d.Acceleration))
 				.attr("r", 1);	
 		})
 
-		chart.Data.forEach(d => console.log(y(d)))
+		chart.Measurements.forEach(d => console.log(y(d)))
 
 
 		 
@@ -138,7 +138,7 @@ func BuildSSC(chart models.Chart) templ.ComponentScript {
 
 		// Append the SVG element.
 		container.append(svg.node());}`,
-		Call:       templ.SafeScript(`__templ_BuildSSC_f1d7`, chart),
-		CallInline: templ.SafeScriptInline(`__templ_BuildSSC_f1d7`, chart),
+		Call:       templ.SafeScript(`__templ_BuildSSC_aaa7`, chart),
+		CallInline: templ.SafeScriptInline(`__templ_BuildSSC_aaa7`, chart),
 	}
 }

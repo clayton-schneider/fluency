@@ -1,9 +1,15 @@
 package models
 
-
 type Chart struct {
 	Date string
 	Student string
 	Skill string
-	Data []float32
+	Measurements []Measurements
+}
+
+type Measurements struct {
+		Id int
+		Acceleration float32
+		Deceleration float32
+		Duration string 
 }

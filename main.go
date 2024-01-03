@@ -14,7 +14,14 @@ func main() {
 		Date:    "2024-01-01",
 		Student: "clayton",
 		Skill:   "addition",
-		Data:    []float32{1.0, 2.0, 4.0, 8.0},
+		Measurements:    []models.Measurements {
+			{ 
+			Id: 1,
+			Acceleration: 32.0, 
+			Deceleration: 1.0, 
+			Duration: "1m30s",
+			}, 
+		},
 	}
 
 	http.HandleFunc("/create-chart", func(w http.ResponseWriter, r *http.Request) {
@@ -46,6 +53,19 @@ func main() {
 
 		pages.ViewChart(chartData).Render(r.Context(), w)
 
+	})
+
+
+	http.HandleFunc("/measurements/1/edit", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+			pages.EditMeasurement(chartData.Measurements[0]).Render(r.Context(), w)
+		}
+	})
+
+	http.HandleFunc("/measurements/1", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+			pages.MeasurementInTable(chartData.Measurements[0]).Render(r.Context(), w)
+		}
 	})
 
 	http.ListenAndServe(":42069", nil)

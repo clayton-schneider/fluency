@@ -3,10 +3,74 @@ package pages
 import "github.com/clayton-schneider/fluency/view/layout"
 import "github.com/clayton-schneider/fluency/models"
 import "github.com/clayton-schneider/fluency/view/components"
+import "strconv"
 
 templ ViewChart(chart models.Chart) {
 @layout.Base() {
-<h1>Standard Celeration Chart For: { chart.Student }, learning: {chart.Skill}, from { chart.Date }</h1>
+<h1>Standard Celeration Chart For: { chart.Student }, learning: { chart.Skill }, from { chart.Date }</h1>
 @components.SSChart(chart)
+<div class="mt-8 flow-root">
+	<div class="overflow-x-auto">
+		<div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+			<table class="min-w-full divide-y divide-gray-300">
+				<thead>
+					<tr>
+						<th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+							Acceleration
+						</th>
+						<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+							Deceleration
+						</th>
+						<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Duration</th>
+						<th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
+							<span class="sr-only">Edit</span>
+						</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y divide-gray-200">
+					for _, measure := range chart.Measurements {
+					@MeasurementInTable(measure)
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
 }
+}
+
+templ EditMeasurement(measurement models.Measurements) {
+<tr hx-target="this" hx-swap="outerHTML">
+	<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+		<input type="number" value={ strconv.FormatFloat(float64(measurement.Acceleration), 'g', -1, 32) } />
+	</td>
+	<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+		<input type="number" value={ strconv.FormatFloat(float64(measurement.Deceleration), 'g', -1, 32)}/>	
+	</td>
+	<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+		<input type="text" value={ measurement.Duration }/>
+	</td>
+	<td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+		<button hx-get={"/measurements/" + strconv.Itoa(measurement.Id)} class="text-indigo-601 hover:text-indigo-900">
+			Cancel<span class="sr-only">, data number</span>
+		</button>
+	</td>
+</tr>
+}
+
+templ MeasurementInTable(measurement models.Measurements) {
+<tr hx-target="this" hx-swap="outerHTML">
+	<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">{ strconv.FormatFloat(float64(measurement.Acceleration), 'g', 4, 32) }
+	</td>
+	<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ strconv.FormatFloat(float64(measurement.Deceleration), 'g', -1, 32) }</td>
+	<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{measurement.Duration}</td>
+	<td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+		<button hx-get={"/measurements/" + strconv.Itoa(measurement.Id) + "/edit"} type="button" class="text-indigo-600 hover:text-indigo-900">
+			Edit
+			<span class="sr-only">
+				, data number { strconv.Itoa(1) }
+			</span>
+		</button>
+	</td>
+</tr>
 }

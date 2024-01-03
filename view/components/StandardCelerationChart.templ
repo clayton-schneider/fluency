@@ -11,8 +11,8 @@ templ SSChart(chart models.Chart) {
 
 script BuildSSC(chart models.Chart) {
 		// Declare the chart dimensions and margins.
-		const width = 840;
-		const height = 500;
+		const width = 1500;
+		const height = 600;
 		const marginTop = 20;
 		const marginRight = 20;
 		const marginBottom = 50;
@@ -83,15 +83,15 @@ script BuildSSC(chart models.Chart) {
 			.text("COUNT PER MINUTE")
 
 
-		chart.Data.forEach((d, i) => {
+		chart.Measurements.forEach((d, i) => {
 			svg.append("circle")
 				.attr("fill", "white")
 				.attr("cx", x(i + 1))
-				.attr("cy", y(d))
+				.attr("cy", y(d.Acceleration))
 				.attr("r", 1);	
 		})
 
-		chart.Data.forEach(d => console.log(y(d)))
+		chart.Measurements.forEach(d => console.log(y(d)))
 
 
 		 
