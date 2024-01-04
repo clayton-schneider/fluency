@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 
@@ -14,20 +15,6 @@ import (
 
 
 func main() {
-
-	r := chi.NewRouter()
-
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hello world"))
-	})
-
-	r.Route("/chart", func(r chi.Router) {
-		r.Get("/{chartId}", func(w http.ResponseWriter, r *http.Request) {
-			chartId := chi.URLParam(r, "chartId")
-			w.Write([]byte(chartId))
-		})
-	})
-
 	chartData := models.Chart{
 		Date:    "2024-01-01",
 		Student: "clayton",
@@ -48,6 +35,28 @@ func main() {
 		},
 	}
 
+	charts := []models.Chart{chartData}
+
+	r := chi.NewRouter()
+
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("hello world"))
+	})
+
+	r.Route("/chart", func(r chi.Router) {
+		r.Get("/{chartId}", func(w http.ResponseWriter, r *http.Request) {
+			chartId, err := strconv.Atoi(chi.URLParam(r, "chartId"))
+
+			if err != nil {
+				// UPDATE:this means that not a number was passed
+				fmt.Println("Must pass an integer")
+			}
+
+			pages.ViewChart(charts[chartId-1]).Render(r.Context(), w)
+		})
+	})
+
+
 	http.HandleFunc("/create-chart", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
 			pages.CreateChart().Render(r.Context(), w)
@@ -62,13 +71,6 @@ func main() {
 			pages.ViewChart(chartData).Render(r.Context(), w)
 		}
 	})
-
-	http.HandleFunc("/charts/", func(w http.ResponseWriter, r *http.Request) {
-
-		pages.ViewChart(chartData).Render(r.Context(), w)
-
-	})
-
 
 	http.HandleFunc("/measurements/1/edit", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
