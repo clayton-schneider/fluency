@@ -4,11 +4,29 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
+
 	"github.com/clayton-schneider/fluency/models"
 	"github.com/clayton-schneider/fluency/view/pages"
 )
 
+
+
+
 func main() {
+
+	r := chi.NewRouter()
+
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("hello world"))
+	})
+
+	r.Route("/chart", func(r chi.Router) {
+		r.Get("/{chartId}", func(w http.ResponseWriter, r *http.Request) {
+			chartId := chi.URLParam(r, "chartId")
+			w.Write([]byte(chartId))
+		})
+	})
 
 	chartData := models.Chart{
 		Date:    "2024-01-01",
@@ -20,6 +38,12 @@ func main() {
 			Acceleration: 32.0, 
 			Deceleration: 1.0, 
 			Duration: "1m30s",
+			}, 
+			{ 
+			Id: 2,
+			Acceleration: 30.0, 
+			Deceleration: 2.0, 
+			Duration: "2m00s",
 			}, 
 		},
 	}
@@ -40,16 +64,6 @@ func main() {
 	})
 
 	http.HandleFunc("/charts/", func(w http.ResponseWriter, r *http.Request) {
-		//f, err := os.ReadFile("./data/test.txt")
-
-		//if err != nil {
-		//	fmt.Println("file could not be read")
-		//}
-
-		//charts := strings.Split(string(f), "\n")
-
-		//pathChar := strings.Split(r.URL.Path, "/charts/")
-		//chartId := pathChar[1]
 
 		pages.ViewChart(chartData).Render(r.Context(), w)
 
@@ -68,5 +82,5 @@ func main() {
 		}
 	})
 
-	http.ListenAndServe(":42069", nil)
+	http.ListenAndServe(":42069", r)
 }
