@@ -15,7 +15,7 @@ import (
 
 
 func main() {
-	chartData := models.Chart{
+	chartOne := models.Chart{
 		Date:    "2024-01-01",
 		Student: "clayton",
 		Skill:   "addition",
@@ -34,8 +34,27 @@ func main() {
 			}, 
 		},
 	}
+	chartTwo := models.Chart{
+		Date:    "2024-01-02",
+		Student: "carly",
+		Skill:   "subtraction",
+		Measurements:    []models.Measurements {
+			{ 
+			Id: 1,
+			Acceleration: 10.0, 
+			Deceleration: 4.0, 
+			Duration: "10m20s",
+			}, 
+			{ 
+			Id: 2,
+			Acceleration: 20.0, 
+			Deceleration: 2.0, 
+			Duration: "2m00s",
+			}, 
+		},
+	}
 
-	charts := []models.Chart{chartData}
+	charts := []models.Chart{chartOne, chartTwo}
 
 	r := chi.NewRouter()
 
@@ -43,7 +62,14 @@ func main() {
 		w.Write([]byte("hello world"))
 	})
 
-	r.Route("/chart", func(r chi.Router) {
+	r.Route("/charts", func(r chi.Router) {
+
+		// LIST CHARTS
+		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("List Charts"))
+		})
+		
+		// GET - SHOW CHART PAGE
 		r.Get("/{chartId}", func(w http.ResponseWriter, r *http.Request) {
 			chartId, err := strconv.Atoi(chi.URLParam(r, "chartId"))
 
@@ -54,34 +80,6 @@ func main() {
 
 			pages.ViewChart(charts[chartId-1]).Render(r.Context(), w)
 		})
-	})
-
-
-	http.HandleFunc("/create-chart", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
-			pages.CreateChart().Render(r.Context(), w)
-		}
-
-		if r.Method == "POST" {
-			r.ParseForm()
-
-			for key, val := range r.Form {
-				fmt.Printf("%s, %s\n", key, val)
-			}
-			pages.ViewChart(chartData).Render(r.Context(), w)
-		}
-	})
-
-	http.HandleFunc("/measurements/1/edit", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
-			pages.EditMeasurement(chartData.Measurements[0]).Render(r.Context(), w)
-		}
-	})
-
-	http.HandleFunc("/measurements/1", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
-			pages.MeasurementInTable(chartData.Measurements[0]).Render(r.Context(), w)
-		}
 	})
 
 	http.ListenAndServe(":42069", r)
