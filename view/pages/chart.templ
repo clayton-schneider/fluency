@@ -1,14 +1,16 @@
+
 package pages
 
 import "github.com/clayton-schneider/fluency/view/layout"
 import "github.com/clayton-schneider/fluency/models"
 import "github.com/clayton-schneider/fluency/view/components"
 import "strconv"
+import "fmt"
 
-templ ViewChart(chart models.Chart) {
+templ ViewChart(chart models.Chart, measurements []models.Measurement) {
 @layout.Base() {
-<h1>Standard Celeration Chart For: { chart.StudentId }, learning: { chart.Skill }, from { chart.Date }</h1>
-@components.SSChart(chart)
+<h1>Standard Celeration Chart For: { fmt.Sprintf("%d", chart.StudentId) }, learning: { chart.Skill }, from { chart.Date }</h1>
+@components.SSChart(chart, measurements)
 <div class="mt-8 flow-root">
 	<div class="overflow-x-auto">
 		<div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -28,9 +30,9 @@ templ ViewChart(chart models.Chart) {
 					</tr>
 				</thead>
 				<tbody class="divide-y divide-gray-200">
-					for _, measure := range chart.Measurements {
-					@MeasurementInTable(measure)
-					}
+					//for _, measure := range measurements {
+					//@MeasurementInTable(measure)
+					//}
 				</tbody>
 			</table>
 		</div>
@@ -39,7 +41,7 @@ templ ViewChart(chart models.Chart) {
 }
 }
 
-templ EditMeasurement(measurement models.Measurements) {
+templ EditMeasurement(measurement models.Measurement) {
 <tr hx-target="this" hx-swap="outerHTML">
 	<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
 		<input type="number" value={ strconv.FormatFloat(float64(measurement.Acceleration), 'g', -1, 32) } />
@@ -58,7 +60,7 @@ templ EditMeasurement(measurement models.Measurements) {
 </tr>
 }
 
-templ MeasurementInTable(measurement models.Measurements) {
+templ MeasurementInTable(measurement models.Measurement) {
 <tr hx-target="this" hx-swap="outerHTML">
 	<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">{ strconv.FormatFloat(float64(measurement.Acceleration), 'g', 4, 32) }
 	</td>

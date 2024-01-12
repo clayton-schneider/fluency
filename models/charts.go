@@ -53,6 +53,45 @@ type DB struct {
 	Measurements []Measurement
 }
 
+func DBFindChart(db DB, id int) Chart {
+	for _, chart := range db.Charts {
+		if chart.Id == id {
+			return chart
+		}
+	}
+
+	return db.Charts[0]
+
+}
+
+func DBFindStudentCharts(db DB, studentId int) []Chart {
+	var charts []Chart
+
+	for _, chart := range db.Charts {
+		if chart.StudentId == studentId {
+			charts = append(charts, chart)
+		}
+	}
+	// TODO - Handle the case if no charts are found
+
+	return charts
+}
+
+func DBFindChartMeasurements(db DB, chartId int) []Measurement {
+	var measures []Measurement
+
+	for _, measure := range db.Measurements {
+		if measure.ChartId == chartId {
+			measures = append(measures, measure)
+		}
+	}
+
+	// TODO - Handle the case of no measures
+	return measures
+}
+
+
+
 func CreateDB() DB {
 
 	var measurements []Measurement

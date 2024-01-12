@@ -12,7 +12,7 @@ import "bytes"
 
 import "github.com/clayton-schneider/fluency/models"
 
-func SSChart(chart models.Chart) templ.Component {
+func SSChart(chart models.Chart, measures []models.Measurement) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -29,7 +29,7 @@ func SSChart(chart models.Chart) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = BuildSSC(chart).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = BuildSSC(chart, measures).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -44,10 +44,10 @@ func SSChart(chart models.Chart) templ.Component {
 	})
 }
 
-func BuildSSC(chart models.Chart) templ.ComponentScript {
+func BuildSSC(chart models.Chart, measures []models.Measurement) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_BuildSSC_aaa7`,
-		Function: `function __templ_BuildSSC_aaa7(chart){// Declare the chart dimensions and margins.
+		Name: `__templ_BuildSSC_4dd9`,
+		Function: `function __templ_BuildSSC_4dd9(chart, measures){// Declare the chart dimensions and margins.
 		const width = 1500;
 		const height = 600;
 		const marginTop = 20;
@@ -120,7 +120,7 @@ func BuildSSC(chart models.Chart) templ.ComponentScript {
 			.text("COUNT PER MINUTE")
 
 
-		chart.Measurements.forEach((d, i) => {
+		measures.forEach((d, i) => {
 			svg.append("circle")
 				.attr("fill", "white")
 				.attr("cx", x(i + 1))
@@ -128,7 +128,7 @@ func BuildSSC(chart models.Chart) templ.ComponentScript {
 				.attr("r", 1);	
 		})
 
-		chart.Measurements.forEach(d => console.log(y(d)))
+		measures.forEach(d => console.log(y(d)))
 
 
 		 
@@ -138,7 +138,7 @@ func BuildSSC(chart models.Chart) templ.ComponentScript {
 
 		// Append the SVG element.
 		container.append(svg.node());}`,
-		Call:       templ.SafeScript(`__templ_BuildSSC_aaa7`, chart),
-		CallInline: templ.SafeScriptInline(`__templ_BuildSSC_aaa7`, chart),
+		Call:       templ.SafeScript(`__templ_BuildSSC_4dd9`, chart, measures),
+		CallInline: templ.SafeScriptInline(`__templ_BuildSSC_4dd9`, chart, measures),
 	}
 }

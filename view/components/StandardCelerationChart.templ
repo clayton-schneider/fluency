@@ -2,14 +2,14 @@ package components
 
 import "github.com/clayton-schneider/fluency/models"
 
-templ SSChart(chart models.Chart) {
+templ SSChart(chart models.Chart, measures []models.Measurement) {
 <div>
 	<div style="margin-top: 40px;" id="container"></div>
-	@BuildSSC(chart)
+	@BuildSSC(chart, measures)
 </div>
 }
 
-script BuildSSC(chart models.Chart) {
+script BuildSSC(chart models.Chart, measures []models.Measurement) {
 		// Declare the chart dimensions and margins.
 		const width = 1500;
 		const height = 600;
@@ -83,7 +83,7 @@ script BuildSSC(chart models.Chart) {
 			.text("COUNT PER MINUTE")
 
 
-		chart.Measurements.forEach((d, i) => {
+		measures.forEach((d, i) => {
 			svg.append("circle")
 				.attr("fill", "white")
 				.attr("cx", x(i + 1))
@@ -91,7 +91,7 @@ script BuildSSC(chart models.Chart) {
 				.attr("r", 1);	
 		})
 
-		chart.Measurements.forEach(d => console.log(y(d)))
+		measures.forEach(d => console.log(y(d)))
 
 
 		 

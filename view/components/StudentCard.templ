@@ -1,9 +1,22 @@
 package components
 
 import "github.com/clayton-schneider/fluency/models"
+import "fmt"
 
 templ StudentCard(student models.Student) {
-<div>
-	<p>{student.Name}</p>
-</div>
+	<a href={ templ.SafeURL(fmt.Sprintf("/students/%d/charts", student.Id)) }>
+		<p>{ student.Name }</p>
+	</a>
+}
+
+templ ChartCard(chart models.Chart) {
+	<a href={ templ.SafeURL(fmt.Sprintf("/charts/%d", chart.Id)) }>
+		{ chart.Skill }
+	</a>
+}
+
+templ ChartCardList(charts []models.Chart) {
+	for _, chart := range charts {
+		@ChartCard(chart)
+	}
 }
