@@ -1,0 +1,12 @@
+package pages
+
+import "github.com/clayton-schneider/fluency/models"
+import "github.com/clayton-schneider/fluency/view/components"
+
+templ Dashboard(students []models.Student) {
+	<div>
+	for _, student := range students {
+		@components.StudentCard(student)
+	}
+	</div>
+}

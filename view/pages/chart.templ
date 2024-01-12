@@ -7,7 +7,7 @@ import "strconv"
 
 templ ViewChart(chart models.Chart) {
 @layout.Base() {
-<h1>Standard Celeration Chart For: { chart.Student }, learning: { chart.Skill }, from { chart.Date }</h1>
+<h1>Standard Celeration Chart For: { chart.StudentId }, learning: { chart.Skill }, from { chart.Date }</h1>
 @components.SSChart(chart)
 <div class="mt-8 flow-root">
 	<div class="overflow-x-auto">
