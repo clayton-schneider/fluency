@@ -32,12 +32,12 @@ func newChart(id int, date string, studentId int, skill string) Chart {
 type Measurement struct {
 	Id           int
 	ChartId		 int
-	Acceleration float32
-	Deceleration float32
+	Acceleration float64
+	Deceleration float64
 	Duration     string
 }
 
-func newMeasurement(id int, chartId int, a float32, d float32, dur string) Measurement {
+func newMeasurement(id int, chartId int, a float64, d float64, dur string) Measurement {
 	return Measurement{
 		Id: id,
 		ChartId: chartId,
@@ -90,6 +90,24 @@ func DBFindChartMeasurements(db DB, chartId int) []Measurement {
 	return measures
 }
 
+func DBFindChartMeasurement(db DB, measurementId int) Measurement {
+	for _, measure := range db.Measurements {
+		if measure.Id == measurementId {
+			return measure
+		}
+	}
+
+	// TODO - Handle measure not found
+	return db.Measurements[0]
+}
+
+func DBUpdateMeasurement(db DB, measurement Measurement) {
+	for i, measure := range db.Measurements {
+		if measure.Id == measurement.Id {
+			db.Measurements[i] = measurement
+		}
+	}
+}
 
 
 func CreateDB() DB {
@@ -97,7 +115,7 @@ func CreateDB() DB {
 	var measurements []Measurement
 
 	for i := 0; i < 10; i++ {
-		measurements = append(measurements, newMeasurement(i, 0, float32(i * 3), float32(i / 2), "time"))
+		measurements = append(measurements, newMeasurement(i, 0, float64(i * 3), float64(i / 2), "time"))
 	}
 
 	db := DB{

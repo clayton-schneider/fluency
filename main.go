@@ -55,5 +55,56 @@ func main() {
 
 	})
 
+	r.Route("/measurements", func (r chi.Router) {
+
+		r.Get("/{measurementId}/edit", func(w http.ResponseWriter, r *http.Request) {
+
+			measurementId, err := strconv.Atoi(chi.URLParam(r, "measurementId"))
+
+			if err != nil {
+				// UPDATE WITH BETTER ERROR HANDLING
+				fmt.Println("Must pass int")
+			}
+
+			measurement := models.DBFindChartMeasurement(db, measurementId)
+			pages.EditMeasurement(measurement).Render(r.Context(), w)
+		})
+
+		r.Get("/{measurementId}", func(w http.ResponseWriter, r *http.Request) {
+			measurementId, err := strconv.Atoi(chi.URLParam(r, "measurementId"))
+
+			if err != nil {
+				// UPDATE WITH BETTER ERROR HANDLING
+				fmt.Println("Must pass int")
+			}
+
+			measurement := models.DBFindChartMeasurement(db, measurementId)
+			pages.MeasurementInTable(measurement).Render(r.Context(), w)
+		})	
+	
+		r.Put("/{measurementId}", func(w http.ResponseWriter, r *http.Request) {
+			measurementId, err := strconv.Atoi(chi.URLParam(r, "measurementId"))
+
+			if err != nil {
+				// UPDATE WITH BETTER ERROR HANDLING
+				fmt.Println("Must pass int")
+			}
+
+			measurement := models.DBFindChartMeasurement(db, measurementId)
+			r.ParseForm()
+
+			ac, _ := strconv.ParseFloat(r.FormValue("acceleration"), 32)
+			measurement.Acceleration = ac
+			dc, _ := strconv.ParseFloat(r.FormValue("deceleration"), 32)
+			measurement.Deceleration = dc
+			measurement.Duration = r.FormValue("duration")
+			
+			models.DBUpdateMeasurement(db, measurement)
+
+			pages.MeasurementInTable(measurement).Render(r.Context(), w)
+		})	
+
+	})
+
 	http.ListenAndServe(":42069", r)
 }
