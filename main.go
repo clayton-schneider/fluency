@@ -16,6 +16,9 @@ func main() {
 	db := models.CreateDB()
 
 	r := chi.NewRouter()
+	fs := http.FileServer(http.Dir("public"))
+
+	r.Handle("/public/*", http.StripPrefix("/public/", fs))
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		pages.Dashboard(db.Students).Render(r.Context(), w)
