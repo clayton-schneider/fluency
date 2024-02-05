@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -109,5 +110,9 @@ func main() {
 
 	})
 
-	http.ListenAndServe(":42069", r)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "42069"
+	}
+	http.ListenAndServe(":" + port, r)
 }
