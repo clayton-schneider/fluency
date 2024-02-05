@@ -4,7 +4,7 @@ import "github.com/clayton-schneider/fluency/models"
 import "fmt"
 
 templ StudentCard(student models.Student) {
-	<a href={ templ.SafeURL(fmt.Sprintf("/students/%d/charts", student.Id)) }>
+	<a class="p-10 bg-gray-800 text-white" href={ templ.SafeURL(fmt.Sprintf("/students/%d/charts", student.Id)) }>
 		<p>{ student.Name }</p>
 	</a>
 }

@@ -2,11 +2,22 @@ package pages
 
 import "github.com/clayton-schneider/fluency/models"
 import "github.com/clayton-schneider/fluency/view/components"
+import "github.com/clayton-schneider/fluency/view/layout"
 
 templ Dashboard(students []models.Student) {
-	<div>
-	for _, student := range students {
-		@components.StudentCard(student)
-	}
+@layout.Base() {
+<div class="min-h-full">
+	<header class="py-10 px-10 bg-gray-500 text-white">
+		<h1 class="font-bold text-4xl">Fluency</h1>
+	</header>
+	<div class="py-10 px-10 bg-gray-300">
+		<h2 class="font-bold text-2xl">Your Students</h2>
+		<ul class="mt-10 grid grid-cols-3 gap-10">
+			for _, student := range students {
+			@components.StudentCard(student)
+			}
+		</ul>
 	</div>
+</div>
+}
 }
